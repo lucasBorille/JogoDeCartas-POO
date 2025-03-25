@@ -21,6 +21,10 @@ public class Jogador {
         return mao;
     }
 
+    public Carta jogarCarta(int i){
+        return mao.remove(i-1);
+    }
+
     public int getPontos(){
         return pontos;
     }
