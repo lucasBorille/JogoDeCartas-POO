@@ -1,5 +1,7 @@
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class App {
@@ -55,7 +57,26 @@ public class App {
                 System.out.print(carta+ ", ");
             }
 
+           //Criando valores das cartas(aqui mudaria com a manilha)
+
             String[] valores = {"4","5","6","7","Q","J","K","A","2","3"};
+            List<String> valoresArray = Arrays.asList(valores);
+
+
+            int indiceMaior = -1;
+
+            for(Carta carta: mesa){
+                if(valoresArray.indexOf(carta.getValor()) > indiceMaior){
+                    indiceMaior = valoresArray.indexOf(carta.getValor());
+                }    
+            }
+            if(mesa.get(0).getValor()==mesa.get(1).getValor()){
+                System.out.println("Embuxou!");
+            }else if(mesa.get(0).getValor()==valores[indiceMaior]){
+                System.out.println("Jogador 1 Ganhou");
+            }else if(mesa.get(1).getValor()==valores[indiceMaior]){
+                System.out.println("Jogador 2 Ganhou!");
+            }
 
             verify = false;
         }
