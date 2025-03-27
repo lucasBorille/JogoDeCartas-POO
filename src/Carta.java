@@ -14,6 +14,7 @@ public class Carta {
     public String getNaipe(){
         return naipe;
     }
+
     @Override
     public String toString(){
         return (valor + " de " + naipe);

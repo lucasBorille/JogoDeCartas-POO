@@ -13,48 +13,51 @@ public class App {
         Jogador jogador1 = new Jogador("Riccetto");
         Jogador jogador2 = new Jogador("Lucas");
 
+
         boolean verify = true;
-        while (verify) { 
-            Baralho baralho = new Baralho();
+        Jogador jogadorQueComeca = jogador1;
+
+        Baralho baralho = new Baralho();
             baralho.embaralhar();
-            int i;
+
             // Distribuindo as cartas
-            for (i = 0; i < 3; i++) {
+
+            for(int i=0;i<3;i++){
                 jogador1.receberCarta(baralho.darCarta());
                 jogador2.receberCarta(baralho.darCarta());
+            }
+            System.out.println();
+
+        while (verify) { 
+            //Criando array de dois jogadores e definindo a ordem
+            ArrayList<Jogador> jogadores = new ArrayList<>();
+            if(jogadorQueComeca == jogador1){
+                jogadores.add(jogador1);
+                jogadores.add(jogador2);  
+            }else{
+                jogadores.add(jogador2);  
+                jogadores.add(jogador1);
             }
 
             //Jogada jogador 1
 
-            //Mostrando a mão
-            System.out.println("Mão Jogador 1, Faça sua jogada");
-            for (Carta carta : jogador1.getMao()) {
-                System.out.print(carta+ ", ");
-            }
-            //Lendo a carta jogada e adicionando na mesa
-            int cartaJogada = sc.nextInt();
-            mesa.add(jogador1.jogarCarta(cartaJogada));
+            for (Jogador jogador : jogadores) {
+                //Mostrando a mão
+                System.out.println("Mão " + jogador.getNome() +", Faça sua jogada");
+                for (Carta carta : jogador.getMao()) {
+                    System.out.print(carta + ", ");
+                }
 
-            //Mostrando cartas na mesa
-            System.out.println("Cartas da mesa: ");
-            for (Carta carta : mesa) {
-                System.out.print(carta + ", ");
-            }
-            System.out.println();
-
-            //Mesma coisa com o jogador 2
-            System.out.println("Mão Jogador 2, Faça sua jogada");
-            for (Carta carta : jogador2.getMao()) {
-                System.out.print(carta+ ", ");
-            }
-            System.out.println();
-            cartaJogada = sc.nextInt();
-
-            mesa.add(jogador2.jogarCarta(cartaJogada));
-
-            System.out.println("Cartas da mesa: ");
-            for (Carta carta : mesa) {
-                System.out.print(carta+ ", ");
+                //Lendo a carta jogada e adicionando na mesa
+                int cartaJogada = sc.nextInt();
+                mesa.add(jogador.jogarCarta(cartaJogada));
+                jogador.setCartaJogada((mesa.get(mesa.size()-1).getValor()), mesa.get(mesa.size()-1).getNaipe());
+                //Mostrando cartas na mesa
+                System.out.println("Cartas da mesa: ");
+                for (Carta carta : mesa) {
+                    System.out.print(carta + ", ");
+                }
+                System.out.println();
             }
 
            //Criando valores das cartas(aqui mudaria com a manilha)
@@ -70,16 +73,38 @@ public class App {
                     indiceMaior = valoresArray.indexOf(carta.getValor());
                 }    
             }
-            if(mesa.get(0).getValor()==mesa.get(1).getValor()){
+            ArrayList<Jogador> vencedores = new ArrayList<>();
+            for (Jogador jogador : jogadores) {
+
+                if(jogador.getCartaJogada().getValor().equals(valoresArray.get(indiceMaior))){
+                    vencedores.add(jogador);
+                }
+            }
+            mesa.clear();
+            
+
+            if(vencedores.size()>1){
                 System.out.println("Embuxou!");
-            }else if(mesa.get(0).getValor()==valores[indiceMaior]){
-                System.out.println("Jogador 1 Ganhou");
-            }else if(mesa.get(1).getValor()==valores[indiceMaior]){
-                System.out.println("Jogador 2 Ganhou!");
+                for (Jogador jogador : vencedores) {
+                    jogador.addPontosRodada(1);
+                }
+            }else {
+                System.out.println(vencedores.get(0).getNome() + " Ganhou!");
+                vencedores.get(0).addPontosRodada(1);
+                jogadorQueComeca = vencedores.get(0);
             }
 
-            verify = false;
+            
+
+            for (Jogador jogador : jogadores) {
+                if(jogador.getPontosRodada()== 2){
+                    jogador.addPontosRodada(-2);
+                    jogador.addPontos(1);
+                    System.out.println(jogador.getNome() + " Ganhou 1 ponto!");
+                    verify = false;
+                }
+            }
         }
-        
+        sc.close();
     }
 }
