@@ -28,6 +28,4 @@ public class Baralho{
         }
         return cartas.remove(0);
     }
-
-
 }

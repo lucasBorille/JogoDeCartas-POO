@@ -32,7 +32,7 @@ public class Jogador {
     }
 
     public void setCartaJogada(String v, String n){
-        cartaJogada = new Carta(v, n);
+        this.cartaJogada = new Carta(v, n);
     }
 
     public int getPontos(){
