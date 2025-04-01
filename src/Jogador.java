@@ -8,59 +8,62 @@ public class Jogador {
     private final String nome;
     private final ArrayList<Carta> mao;
 
-
     public Jogador(String nome) {
         this.nome = nome;
         mao = new ArrayList<>();
         pontos = 0;
     }
 
-    public void receberCarta(Carta carta){
+    public void receberCarta(Carta carta) {
         mao.add(carta);
     }
-    
-    public List<Carta> getMao(){
+
+    public List<Carta> getMao() {
         return mao;
     }
 
-    public Carta jogarCarta(int i){
-        return mao.remove(i-1);
+    public Carta jogarCarta(int i) {
+        return mao.remove(i - 1);
     }
 
-    public Carta getCartaJogada(){
+    public Carta getCartaJogada() {
         return cartaJogada;
     }
 
-    public void setCartaJogada(String v, String n){
+    public void setCartaJogada(String v, String n) {
         this.cartaJogada = new Carta(v, n);
     }
 
-    public int getPontos(){
+    public int getPontos() {
         return pontos;
     }
 
-    public int getPontosRodada(){
+    public int getPontosRodada() {
         return pontosRodada;
     }
 
-    public void addPontosRodada(int i){
-        pontosRodada+=i;
+    public void addPontosRodada(int i) {
+        pontosRodada += i;
     }
 
-    public void addPontos(int p){
+    public void addPontos(int p) {
         pontos += p;
     }
 
-    public void limparMao(){
+    public void limparMao() {
         mao.clear();
     }
 
-    public String getNome(){
+    public String getNome() {
         return nome;
     }
 
+    public void setPontosRodada(int i) {
+        this.pontosRodada = i;
+    }
+
     @Override
-    public String toString(){
+    public String toString() {
         return nome;
     }
 
