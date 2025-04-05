@@ -57,7 +57,9 @@ public class App {
 
                 }
             }
-
+            int rodada = 1;
+            jogador1.setFezPrimeira(false);
+            jogador2.setFezPrimeira(false);
             while (verify) {
                 // Criando array de dois jogadores e definindo a ordem
                 ArrayList<Jogador> jogadores = new ArrayList<>();
@@ -74,6 +76,7 @@ public class App {
                 for (Jogador jogador : jogadores) {
 
                     // Mostrando a mão
+                    System.out.println("RODADA: " + rodada);
                     System.out.println("Mão " + jogador.getNome() + ", Faça sua jogada");
 
                     for (Carta carta : jogador.getMao()) {
@@ -109,6 +112,7 @@ public class App {
                 }
 
                 ArrayList<Jogador> vencedores = new ArrayList<>();
+    
                 for (Jogador jogador : jogadores) {
                     if (jogador.getCartaJogada().getForca() == maiorForca) {
                         vencedores.add(jogador);
@@ -118,13 +122,31 @@ public class App {
 
                 if (vencedores.size() > 1) {
                     System.out.println("Embuxou!");
-                if (jogador1.getPontosRodada() < 1 && jogador2.getPontosRodada() < 1){
-                    for (Jogador jogador : vencedores) {
-                        jogador.addPontosRodada(1);
+                    if(rodada == 1){
+                        jogador1.addPontosRodada(1);
+                        jogador2.addPontosRodada(1);
+                    }else if(rodada == 2){
+                        if(jogador1.getPontosRodada() == 1 && jogador2.getPontosRodada()==0){
+                            jogador1.addPontosRodada(1);
+                        }else if(jogador2.getPontosRodada() == 1 && jogador1.getPontosRodada()==0){
+                            jogador2.addPontosRodada(1);
+                        }
+                    }else{
+                        if(jogador1.getFezPrimeira()){
+                            jogador1.setPontosRodada(2);
+                            jogador2.setPontosRodada(0);
+                        }else if(jogador2.getFezPrimeira()){
+                            jogador2.setPontosRodada(2);
+                            jogador1.setPontosRodada(0);
+                        }else{
+                            System.out.println("EMPATE");
+                            break;
+                        }
                     }
-                }
-
                 } else {
+                    if(rodada == 1){
+                        vencedores.get(0).setFezPrimeira(true);
+                    }
                     System.out.println(vencedores.get(0).getNome() + " Ganhou a rodada!");
                     vencedores.get(0).addPontosRodada(1);
                     jogadorQueComeca = vencedores.get(0);
@@ -144,6 +166,7 @@ public class App {
                         jogador.setPontosRodada(0);
                     }
                 }
+                rodada++;
             }
 
             if (inicial == jogadorInicial.size() - 1) {

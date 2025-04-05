@@ -5,6 +5,7 @@ public class Jogador {
     private int pontos;
     private int pontosRodada;
     private Carta cartaJogada;
+    private boolean fezPrimeira;
     private final String nome;
     private final ArrayList<Carta> mao;
 
@@ -60,6 +61,14 @@ public class Jogador {
 
     public void setPontosRodada(int i) {
         this.pontosRodada = i;
+    }
+
+    public boolean getFezPrimeira(){
+        return this.fezPrimeira;
+    }
+
+    public void setFezPrimeira(boolean fezPrimeira){
+        this.fezPrimeira = fezPrimeira;
     }
 
     @Override
