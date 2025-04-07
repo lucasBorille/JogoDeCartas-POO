@@ -1,179 +1,88 @@
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
 
 public class App {
     public static void main(String[] args) throws Exception {
         Scanner sc = new Scanner(System.in);
+        String[] nomes = {"Lucas", "Tiago","Ricceto","Talysson"};
 
-        ArrayList<Carta> mesa = new ArrayList<>();
+        Jogo jogo = new Jogo(nomes);
+        
 
-        Jogador jogador1 = new Jogador("Riccetto");
-        Jogador jogador2 = new Jogador("Lucas");
+        while (!jogo.jogoAcabou()) {
+            jogo.gerarBaralho();
+            
+            jogo.getBaralho().embaralhar();
 
-        ArrayList<Jogador> jogadorInicial = new ArrayList<>();
+            jogo.definirManilha();
 
-        jogadorInicial.add(jogador1);
-        jogadorInicial.add(jogador2);
+            jogo.distribuirCartas();
 
-        int inicial = 0;
+            System.out.println("Carta Virada: " + jogo.getCartaVirada());
 
-        while (jogador1.getPontos() < 12 && jogador2.getPontos() < 12) {
-            boolean verify = true;
-            Jogador jogadorQueComeca = jogadorInicial.get(inicial);
+            int rodada;
+            for(rodada = 1; rodada<=3; rodada++) {
 
-            Baralho baralho = new Baralho();
-            baralho.embaralhar();
+                for (Jogador jogador : jogo.getJogadores()) {
 
-            // Distribuindo as cartas
-
-            for (int i = 0; i < 3; i++) {
-                jogador1.receberCarta(baralho.darCarta());
-                jogador2.receberCarta(baralho.darCarta());
-            }
-            System.out.println();
-
-            // Criar Manilha
-            String[] valores = { "4", "5", "6", "7", "Q", "J", "K", "A", "2", "3" };
-            List<String> valoresArray = Arrays.asList(valores);
-
-            String manilha = baralho.darCarta().getValor();
-            // Printando a carta virada
-            System.out.println("Carta Virada: " + manilha);
-
-            // Dando o valor da manilha como o proximo
-            for (String carta : valoresArray) {
-                if (carta == manilha) {
-
-                    if (manilha == "3") {
-                        manilha = "4";
-                        break;
-                    } else {
-                        manilha = valoresArray.get(valoresArray.indexOf(carta) + 1);
-                        break;
-                    }
-
-                }
-            }
-            int rodada = 1;
-            jogador1.setFezPrimeira(false);
-            jogador2.setFezPrimeira(false);
-            while (verify) {
-                // Criando array de dois jogadores e definindo a ordem
-                ArrayList<Jogador> jogadores = new ArrayList<>();
-                if (jogadorQueComeca == jogador1) {
-                    jogadores.add(jogador1);
-                    jogadores.add(jogador2);
-                } else {
-                    jogadores.add(jogador2);
-                    jogadores.add(jogador1);
-                }
-
-                // Jogada jogador 1
-
-                for (Jogador jogador : jogadores) {
-
-                    // Mostrando a mão
-                    System.out.println("RODADA: " + rodada);
-                    System.out.println("Mão " + jogador.getNome() + ", Faça sua jogada");
-
-                    for (Carta carta : jogador.getMao()) {
-                        if (carta.getValor().equals(manilha)) {
-                            carta.setManilha();
-                        }
-                        System.out.print(carta + ", ");
-                    }
+                    jogador.mostrarMao();
 
                     // Lendo a carta jogada e adicionando na mesa
                     int cartaJogada = sc.nextInt();
-                    mesa.add(jogador.jogarCarta(cartaJogada));
-                    jogador.setCartaJogada((mesa.get(mesa.size() - 1).getValor()),
-                            mesa.get(mesa.size() - 1).getNaipe());
-                    if (jogador.getCartaJogada().getValor() == manilha) {
-                        jogador.getCartaJogada().setManilha();
-                    }
+                    jogo.adicionarJogada(jogador, jogador.jogarCarta(cartaJogada));
+
                     // Mostrando cartas na mesa
-                    System.out.println("Cartas da mesa: ");
-                    for (Carta carta : mesa) {
-                        System.out.print(carta + ", ");
-                    }
-                    System.out.println();
+                    jogo.mostrarJogadas();
                 }
+                
+                
 
-                // Definindo a maior forca da mesa
-                int maiorForca = -1;
+                Time vencedora = jogo.descobrirDuplaVencedoraDaRodada();
 
-                for (Carta carta : mesa) {
-                    if (carta.getForca() > maiorForca) {
-                        maiorForca = carta.getForca();
-                    }
-                }
-
-                ArrayList<Jogador> vencedores = new ArrayList<>();
-    
-                for (Jogador jogador : jogadores) {
-                    if (jogador.getCartaJogada().getForca() == maiorForca) {
-                        vencedores.add(jogador);
-                    }
-                }
-                mesa.clear();
-
-                if (vencedores.size() > 1) {
-                    System.out.println("Embuxou!");
+                if(vencedora == jogo.getTime1()){
+                    System.out.println("Time 1 Ganhou a rodada");
+                    jogo.getTime1().addPontosRodada(1);
+                    if(rodada == 1) jogo.getTime1().setFezPrimeira(true);
+                }else if(vencedora == jogo.getTime2()){
+                    System.out.println("Time 2 Ganhou a rodada");
+                    jogo.getTime2().addPontosRodada(1);
+                    if(rodada == 1) jogo.getTime2().setFezPrimeira(true);
+                }else{
+                    System.out.println("EMBUXOU!");
                     if(rodada == 1){
-                        jogador1.addPontosRodada(1);
-                        jogador2.addPontosRodada(1);
+                        jogo.getTime1().addPontosRodada(1);
+                        jogo.getTime2().addPontosRodada(1);
                     }else if(rodada == 2){
-                        if(jogador1.getPontosRodada() == 1 && jogador2.getPontosRodada()==0){
-                            jogador1.addPontosRodada(1);
-                        }else if(jogador2.getPontosRodada() == 1 && jogador1.getPontosRodada()==0){
-                            jogador2.addPontosRodada(1);
+                        if(jogo.getTime1().getPontosRodada()==0 || jogo.getTime2().getPontosRodada()==0){
+                            jogo.getTime1().addPontosRodada(1);
+                            jogo.getTime2().addPontosRodada(1);
                         }
                     }else{
-                        if(jogador1.getFezPrimeira()){
-                            jogador1.setPontosRodada(2);
-                            jogador2.setPontosRodada(0);
-                        }else if(jogador2.getFezPrimeira()){
-                            jogador2.setPontosRodada(2);
-                            jogador1.setPontosRodada(0);
-                        }else{
-                            System.out.println("EMPATE");
+                        if(jogo.getTime1().getFezPrimeira()){
+                            jogo.definirDuplaGanhadoraDoPonto(jogo.getTime1(), jogo.getPontosRodada());
                             break;
+                        }else if(jogo.getTime2().getFezPrimeira()){
+                            jogo.definirDuplaGanhadoraDoPonto(jogo.getTime2(), jogo.getPontosRodada());
+                            break;
+                        }else{
+                            System.out.println("EMPATE!");
                         }
                     }
-                } else {
-                    if(rodada == 1){
-                        vencedores.get(0).setFezPrimeira(true);
-                    }
-                    System.out.println(vencedores.get(0).getNome() + " Ganhou a rodada!");
-                    vencedores.get(0).addPontosRodada(1);
-                    jogadorQueComeca = vencedores.get(0);
                 }
 
-                for (Jogador jogador : jogadores) {
-                    if (jogador.getPontosRodada() == 2) {
-                        jogador.addPontosRodada(-2);
-                        jogador.addPontos(1); // ALTERAR DEPOIS PARA 1
-                        System.out.println(jogador.getNome() + " Ganhou 1 ponto!");
-                        verify = false;
-                    }
+                if(jogo.getTime1().getPontosRodada()>=2){
+                    jogo.definirDuplaGanhadoraDoPonto(jogo.getTime1(), jogo.getPontosRodada());
+                    break;
+                }else if(jogo.getTime2().getPontosRodada()>=2){
+                    jogo.definirDuplaGanhadoraDoPonto(jogo.getTime2(), jogo.getPontosRodada());
+                    break;
                 }
-                if (!verify) {
-                    for (Jogador jogador : jogadores) {
-                        jogador.limparMao();
-                        jogador.setPontosRodada(0);
-                    }
-                }
-                rodada++;
+
+                jogo.limparMesa();
+                jogo.limparJogadasNaMesa();
+
             }
 
-            if (inicial == jogadorInicial.size() - 1) {
-                inicial = 0;
-            } else {
-                inicial++;
-            }
         }
         sc.close();
     }
