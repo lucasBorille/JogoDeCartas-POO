@@ -17,16 +17,16 @@ public class Jogada {
         return carta;
     }
 
-    public boolean getEmpate(){
+    public boolean getEmpate() {
         return empate;
     }
 
-    public void setEmpate(boolean empate){
+    public void setEmpate(boolean empate) {
         this.empate = empate;
     }
 
     @Override
     public String toString() {
-        return jogador.getNome() + " jogou " + carta;
+        return "\n" + jogador.getNome() + " jogou: " + carta;
     }
 }

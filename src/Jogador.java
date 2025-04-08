@@ -14,18 +14,18 @@ public class Jogador {
         mao.add(carta);
     }
 
-    public Carta jogarCarta(int i){
-        return mao.remove(i-1);
+    public Carta jogarCarta(int i) {
+        return mao.remove(i - 1);
     }
 
     public List<Carta> getMao() {
         return mao;
     }
 
-    public void mostrarMao(){
-        System.out.println("Mão " + this.nome + ", Faça sua jogada"); 
-        for(Carta carta: this.mao){
-            System.out.print(carta + ", ");
+    public void mostrarMao() {
+        System.out.println("\nMão do " + this.nome + " | Faça sua jogada! (1, 2 ou 3)");
+        for (Carta carta : this.mao) {
+            System.out.print(carta + " | ");
         }
     }
 
