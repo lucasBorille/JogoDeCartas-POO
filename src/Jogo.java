@@ -51,7 +51,7 @@ public class Jogo {
         String[] ordem = { "4", "5", "6", "7", "Q", "J", "K", "A", "2", "3" };
         for (int i = 0; i < ordem.length; i++) {
             if (ordem[i].equals(valor)) {
-                return ordem[(i + 1) % ordem.length]; // volta pro início se for "3"
+                return ordem[(i + 1) % ordem.length];
             }
         }
         return null;
@@ -102,22 +102,18 @@ public class Jogo {
             }
         }
 
-        // Aqui definimos empate se houver mais de uma jogada com a mesma força
         boolean houveEmpate = candidatas.size() > 1;
 
-        // Marca cada jogada empatada
         for (Jogada j : jogadasNaMesa) {
             if (j.getCarta().getForca() == maiorForca) {
                 j.setEmpate(houveEmpate);
             }
         }
 
-        // Retorna a primeira como "referência", mas todas as empatadas estão marcadas
         return candidatas.get(0);
     }
 
     public Time descobrirDuplaVencedoraDaRodada() {
-        // Coletar todos os jogadores com a carta de maior força
         int forcaMaxima = -1;
         for (Jogada jogada : jogadasNaMesa) {
             if (jogada.getCarta().getForca() > forcaMaxima) {
@@ -133,7 +129,6 @@ public class Jogo {
         }
 
         if (empatados.size() == 1) {
-            // Só um jogador fez a maior jogada
             Jogador vencedor = empatados.get(0);
             if (time1.getJogadores().contains(vencedor))
                 return time1;
@@ -141,7 +136,6 @@ public class Jogo {
                 return time2;
         }
 
-        // Verificar se todos os empatados são da mesma dupla
         boolean todosNaDupla1 = true;
         boolean todosNaDupla2 = true;
 
@@ -157,7 +151,7 @@ public class Jogo {
         if (todosNaDupla2)
             return time2;
 
-        return null; // empate entre duplas diferentes
+        return null;
     }
 
     public void definirDuplaGanhadoraDoPonto(Time time, int p) {
@@ -165,7 +159,8 @@ public class Jogo {
         String nome2 = time.getJogadores().get(1).getNome();
         System.out.println(nome1 + " e " + nome2 + " ganharam " + p + " ponto(s)!");
         time.addPontos(p);
-        System.out.println("Time 1: " + this.time1.getPontos() + " X Time 2: " + this.time2.getPontos());
+        System.out.println(
+                "\n=== PLACAR: Time 1 " + this.time1.getPontos() + " X " + this.time2.getPontos() + " Time 2 ===");
         for (Jogador jogador : jogadores) {
             jogador.limparMao();
         }

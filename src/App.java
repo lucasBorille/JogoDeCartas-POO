@@ -26,23 +26,20 @@ public class App {
 
                     jogador.mostrarMao();
 
-                    // Lendo a carta jogada e adicionando na mesa
                     int cartaJogada;
                     while (true) {
                         System.out.print("Carta: ");
                         cartaJogada = sc.nextInt();
 
-                        // Verifica se a jogada é válida
-                        if (cartaJogada < 1 || cartaJogada > jogador.getMao().size() ) {
+                        if (cartaJogada < 1 || cartaJogada > jogador.getMao().size()) {
                             System.out.println("\nJogada inválida!");
                         } else {
-                            break; // Sai do loop se a jogada for válida
+                            break;
                         }
                     }
 
                     jogo.adicionarJogada(jogador, jogador.jogarCarta(cartaJogada));
 
-                    // Mostrando cartas na mesa
                     jogo.mostrarJogadas();
                 }
 
@@ -59,7 +56,7 @@ public class App {
                     if (rodada == 1)
                         jogo.getTime2().setFezPrimeira(true);
                 } else {
-                    System.out.println("EMBUXOU!");
+                    System.out.println("\nEMBUXOU!\n");
                     if (rodada == 1) {
                         jogo.getTime1().addPontosRodada(1);
                         jogo.getTime2().addPontosRodada(1);
