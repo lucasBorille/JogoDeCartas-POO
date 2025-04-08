@@ -1,179 +1,96 @@
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
 
 public class App {
     public static void main(String[] args) throws Exception {
         Scanner sc = new Scanner(System.in);
+        String[] nomes = { "Lucas", "Thiago", "Ricceto", "Talysson" };
 
-        ArrayList<Carta> mesa = new ArrayList<>();
+        Jogo jogo = new Jogo(nomes);
 
-        Jogador jogador1 = new Jogador("Riccetto");
-        Jogador jogador2 = new Jogador("Lucas");
+        while (!jogo.jogoAcabou()) {
+            jogo.gerarBaralho();
 
-        ArrayList<Jogador> jogadorInicial = new ArrayList<>();
+            jogo.getBaralho().embaralhar();
 
-        jogadorInicial.add(jogador1);
-        jogadorInicial.add(jogador2);
+            jogo.definirManilha();
 
-        int inicial = 0;
+            jogo.distribuirCartas();
 
-        while (jogador1.getPontos() < 12 && jogador2.getPontos() < 12) {
-            boolean verify = true;
-            Jogador jogadorQueComeca = jogadorInicial.get(inicial);
+            System.out.println("\nCarta Virada: " + jogo.getCartaVirada());
 
-            Baralho baralho = new Baralho();
-            baralho.embaralhar();
+            int rodada;
+            for (rodada = 1; rodada <= 3; rodada++) {
 
-            // Distribuindo as cartas
+                for (Jogador jogador : jogo.getJogadores()) {
 
-            for (int i = 0; i < 3; i++) {
-                jogador1.receberCarta(baralho.darCarta());
-                jogador2.receberCarta(baralho.darCarta());
-            }
-            System.out.println();
+                    jogador.mostrarMao();
 
-            // Criar Manilha
-            String[] valores = { "4", "5", "6", "7", "Q", "J", "K", "A", "2", "3" };
-            List<String> valoresArray = Arrays.asList(valores);
+                    int cartaJogada;
+                    while (true) {
+                        System.out.print("Carta: ");
+                        cartaJogada = sc.nextInt();
 
-            String manilha = baralho.darCarta().getValor();
-            // Printando a carta virada
-            System.out.println("Carta Virada: " + manilha);
-
-            // Dando o valor da manilha como o proximo
-            for (String carta : valoresArray) {
-                if (carta == manilha) {
-
-                    if (manilha == "3") {
-                        manilha = "4";
-                        break;
-                    } else {
-                        manilha = valoresArray.get(valoresArray.indexOf(carta) + 1);
-                        break;
-                    }
-
-                }
-            }
-            int rodada = 1;
-            jogador1.setFezPrimeira(false);
-            jogador2.setFezPrimeira(false);
-            while (verify) {
-                // Criando array de dois jogadores e definindo a ordem
-                ArrayList<Jogador> jogadores = new ArrayList<>();
-                if (jogadorQueComeca == jogador1) {
-                    jogadores.add(jogador1);
-                    jogadores.add(jogador2);
-                } else {
-                    jogadores.add(jogador2);
-                    jogadores.add(jogador1);
-                }
-
-                // Jogada jogador 1
-
-                for (Jogador jogador : jogadores) {
-
-                    // Mostrando a mão
-                    System.out.println("RODADA: " + rodada);
-                    System.out.println("Mão " + jogador.getNome() + ", Faça sua jogada");
-
-                    for (Carta carta : jogador.getMao()) {
-                        if (carta.getValor().equals(manilha)) {
-                            carta.setManilha();
-                        }
-                        System.out.print(carta + ", ");
-                    }
-
-                    // Lendo a carta jogada e adicionando na mesa
-                    int cartaJogada = sc.nextInt();
-                    mesa.add(jogador.jogarCarta(cartaJogada));
-                    jogador.setCartaJogada((mesa.get(mesa.size() - 1).getValor()),
-                            mesa.get(mesa.size() - 1).getNaipe());
-                    if (jogador.getCartaJogada().getValor() == manilha) {
-                        jogador.getCartaJogada().setManilha();
-                    }
-                    // Mostrando cartas na mesa
-                    System.out.println("Cartas da mesa: ");
-                    for (Carta carta : mesa) {
-                        System.out.print(carta + ", ");
-                    }
-                    System.out.println();
-                }
-
-                // Definindo a maior forca da mesa
-                int maiorForca = -1;
-
-                for (Carta carta : mesa) {
-                    if (carta.getForca() > maiorForca) {
-                        maiorForca = carta.getForca();
-                    }
-                }
-
-                ArrayList<Jogador> vencedores = new ArrayList<>();
-    
-                for (Jogador jogador : jogadores) {
-                    if (jogador.getCartaJogada().getForca() == maiorForca) {
-                        vencedores.add(jogador);
-                    }
-                }
-                mesa.clear();
-
-                if (vencedores.size() > 1) {
-                    System.out.println("Embuxou!");
-                    if(rodada == 1){
-                        jogador1.addPontosRodada(1);
-                        jogador2.addPontosRodada(1);
-                    }else if(rodada == 2){
-                        if(jogador1.getPontosRodada() == 1 && jogador2.getPontosRodada()==0){
-                            jogador1.addPontosRodada(1);
-                        }else if(jogador2.getPontosRodada() == 1 && jogador1.getPontosRodada()==0){
-                            jogador2.addPontosRodada(1);
-                        }
-                    }else{
-                        if(jogador1.getFezPrimeira()){
-                            jogador1.setPontosRodada(2);
-                            jogador2.setPontosRodada(0);
-                        }else if(jogador2.getFezPrimeira()){
-                            jogador2.setPontosRodada(2);
-                            jogador1.setPontosRodada(0);
-                        }else{
-                            System.out.println("EMPATE");
+                        if (cartaJogada < 1 || cartaJogada > jogador.getMao().size()) {
+                            System.out.println("\nJogada inválida!");
+                        } else {
                             break;
                         }
                     }
+
+                    jogo.adicionarJogada(jogador, jogador.jogarCarta(cartaJogada));
+
+                    jogo.mostrarJogadas();
+                }
+
+                Time vencedora = jogo.descobrirDuplaVencedoraDaRodada();
+
+                if (vencedora == jogo.getTime1()) {
+                    System.out.println("\nTime 1 venceu a rodada!");
+                    jogo.getTime1().addPontosRodada(1);
+                    if (rodada == 1)
+                        jogo.getTime1().setFezPrimeira(true);
+                } else if (vencedora == jogo.getTime2()) {
+                    System.out.println("\nTime 2 venceu a rodada!");
+                    jogo.getTime2().addPontosRodada(1);
+                    if (rodada == 1)
+                        jogo.getTime2().setFezPrimeira(true);
                 } else {
-                    if(rodada == 1){
-                        vencedores.get(0).setFezPrimeira(true);
+                    System.out.println("\nEMBUXOU!\n");
+                    if (rodada == 1) {
+                        jogo.getTime1().addPontosRodada(1);
+                        jogo.getTime2().addPontosRodada(1);
+                    } else if (rodada == 2) {
+                        if (jogo.getTime1().getPontosRodada() == 0 || jogo.getTime2().getPontosRodada() == 0) {
+                            jogo.getTime1().addPontosRodada(1);
+                            jogo.getTime2().addPontosRodada(1);
+                        }
+                    } else {
+                        if (jogo.getTime1().getFezPrimeira()) {
+                            jogo.definirDuplaGanhadoraDoPonto(jogo.getTime1(), jogo.getPontosRodada());
+                            break;
+                        } else if (jogo.getTime2().getFezPrimeira()) {
+                            jogo.definirDuplaGanhadoraDoPonto(jogo.getTime2(), jogo.getPontosRodada());
+                            break;
+                        } else {
+                            System.out.println("EMPATOU!");
+                        }
                     }
-                    System.out.println(vencedores.get(0).getNome() + " Ganhou a rodada!");
-                    vencedores.get(0).addPontosRodada(1);
-                    jogadorQueComeca = vencedores.get(0);
                 }
 
-                for (Jogador jogador : jogadores) {
-                    if (jogador.getPontosRodada() == 2) {
-                        jogador.addPontosRodada(-2);
-                        jogador.addPontos(1); // ALTERAR DEPOIS PARA 1
-                        System.out.println(jogador.getNome() + " Ganhou 1 ponto!");
-                        verify = false;
-                    }
+                if (jogo.getTime1().getPontosRodada() >= 2) {
+                    jogo.definirDuplaGanhadoraDoPonto(jogo.getTime1(), jogo.getPontosRodada());
+                    break;
+                } else if (jogo.getTime2().getPontosRodada() >= 2) {
+                    jogo.definirDuplaGanhadoraDoPonto(jogo.getTime2(), jogo.getPontosRodada());
+                    break;
                 }
-                if (!verify) {
-                    for (Jogador jogador : jogadores) {
-                        jogador.limparMao();
-                        jogador.setPontosRodada(0);
-                    }
-                }
-                rodada++;
+
+                jogo.limparMesa();
+                jogo.limparJogadasNaMesa();
+
             }
 
-            if (inicial == jogadorInicial.size() - 1) {
-                inicial = 0;
-            } else {
-                inicial++;
-            }
         }
         sc.close();
     }
