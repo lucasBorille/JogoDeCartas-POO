@@ -74,6 +74,8 @@ public class App {
                             break;
                         } else {
                             System.out.println("EMPATOU!");
+                            jogo.getTime1().setPontosRodada(0);
+                            jogo.getTime2().setPontosRodada(0);
                         }
                     }
                 }

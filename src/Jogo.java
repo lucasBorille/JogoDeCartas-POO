@@ -8,7 +8,6 @@ public class Jogo {
     private int pontosRodada;
     private Time time1;
     private Time time2;
-    private Time ultimoTimeQuePediuTruco = null;
     private List<Jogada> jogadasNaMesa = new ArrayList<>();
     private List<Jogador> jogadores = new ArrayList<>();
 
@@ -58,12 +57,7 @@ public class Jogo {
     }
 
     public void distribuirCartas() {
-        for (Jogador jogador : time1.getJogadores()) {
-            for (int i = 0; i < 3; i++) {
-                jogador.receberCarta(baralho.darCarta());
-            }
-        }
-        for (Jogador jogador : time2.getJogadores()) {
+        for (Jogador jogador : this.jogadores) {
             for (int i = 0; i < 3; i++) {
                 jogador.receberCarta(baralho.darCarta());
             }
@@ -170,7 +164,6 @@ public class Jogo {
         limparMesa();
         time1.setFezPrimeira(false);
         time2.setFezPrimeira(false);
-        this.ultimoTimeQuePediuTruco = null;
     }
 
     public void limparMesa() {
